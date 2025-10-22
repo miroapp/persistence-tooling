@@ -75,6 +75,19 @@
 
     <profiles>
         <profile>
+            <id>example</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>!true</value>
+                </property>
+            </activation>
+            <modules>
+                <module>example</module>
+            </modules>
+        </profile>
+
+        <profile>
             <id>release-sign-artifacts</id>
             <activation>
                 <property>
@@ -128,12 +141,6 @@
                 <groupId>jakarta.annotation</groupId>
                 <artifactId>jakarta.annotation-api</artifactId>
                 <version>3.0.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.postgresql</groupId>
-                <artifactId>postgresql</artifactId>
-                <version>42.7.5</version>
             </dependency>
 
             <dependency>

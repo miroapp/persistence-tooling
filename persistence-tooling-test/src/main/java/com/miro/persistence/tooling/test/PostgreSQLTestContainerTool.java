@@ -134,7 +134,8 @@ public class PostgreSQLTestContainerTool {
                 .dataSource(jdbcUrl, DB_USER, DB_PASSWORD)
                 .locations("classpath:" + flywayMigrationSet.getMigrationResourcesPath())
                 .table(flywayMigrationSet.getFlywayTable())
-                .schemas(schema == null ? new String[0] : new String[]{schema});
+                .schemas(schema == null ? new String[0] : new String[]{schema})
+                .baselineOnMigrate(true);
 
         customizeFlyway(configuration);
 
