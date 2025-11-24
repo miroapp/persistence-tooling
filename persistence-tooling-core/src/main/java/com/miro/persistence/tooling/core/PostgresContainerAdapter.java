@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.script.ScriptException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,8 +100,19 @@ public class PostgresContainerAdapter implements PostgresExecutable {
     public static void removeOldExistedImages(String imageName) {
         DockerClient dockerClient = DockerClientFactory.instance().client();
         List<Image> images = dockerClient.listImagesCmd().withImageNameFilter(imageName).exec();
-        logCurrentImagesList(images, imageName);
-        images.stream()
+        // since TestContainers 2 it returns all images, need to filter by image name
+        List<Image> filteredImages = images.stream()
+                .filter(img -> {
+                    for (String repoTag : img.getRepoTags()) {
+                        if (repoTag.contains(imageName + ":")) {
+                            return true;
+                        }
+                    }
+                    return false;
+                })
+                .collect(Collectors.toList());
+        logCurrentImagesList(filteredImages, imageName);
+        filteredImages.stream()
                 .sorted(Comparator.comparing(Image::getCreated).reversed())
                 .forEach(image -> removeExistedImage(imageName, dockerClient, image));
     }
